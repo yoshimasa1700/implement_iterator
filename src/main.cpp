@@ -62,11 +62,63 @@ public:
         if(index_ > my_class_->size_) index_ = UINT_MAX;
         return *this;
     }
+
+    OriginalArrayIterator& operator--(){
+        if(index_ == 0){
+            return *this;
+        }
+
+        index_--;
+        return *this;
+    }
+
     OriginalArrayIterator operator++(int){
         OriginalArrayIterator result = *this;
-        index_++;
-        if(index_ >= my_class_->size_) index_ = my_class_->size_;
+        result.index_++;
+        if(result.index_ >= my_class_->size_) result.index_ = my_class_->size_;
         return result;
+    }
+
+    OriginalArrayIterator operator--(int){
+        OriginalArrayIterator result = *this;
+
+        if(result.index_ == 0){
+            return result;
+        }
+
+        result.index_--;
+        return result;
+    }
+
+    OriginalArrayIterator operator+(const uint& step){
+        OriginalArrayIterator result = *this;
+        result.index_ += step;
+        if(result.index_ >= my_class_->size_) result.index_ = my_class_->size_;
+        return result;
+    }
+
+    OriginalArrayIterator operator-(const uint& step){
+        OriginalArrayIterator result = *this;
+
+        if(step > result.index_){
+            result.index_ = 0;
+        }else{
+            result.index_ -= step;
+        }
+
+        return result;
+    }
+
+    int operator-(const OriginalArrayIterator& other){
+        return this->index_ - other.index_;
+    }
+
+    int operator>(const OriginalArrayIterator& other){
+        return this->index_ > other.index_;
+    }
+
+    int operator<(const OriginalArrayIterator& other){
+        return this->index_ < other.index_;
     }
 
     int& operator*(){
@@ -101,7 +153,7 @@ void show(const OriginalArray& original_array){
 
 
 int main(){
-    int array[] = {1, 2, 3, 4};
+    int array[] = {4, 3, 2, 1};
 
     OriginalArray original_array = OriginalArray(array, 4);
 
@@ -112,5 +164,9 @@ int main(){
 
     cout << "Update value via iterator" << endl;
     *original_itr += 1;
+    show(original_array);
+
+    cout << "Sort by stl library" << endl;
+    sort(original_array.begin(), original_array.end());
     show(original_array);
 }
